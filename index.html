@@ -1,0 +1,1131 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Odoo 19 Certification Practice Exam</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', sans-serif;
+            background: linear-gradient(135deg, #1a1a2e, #16213e);
+            min-height: 100vh;
+            color: #fff;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+        }
+
+        header {
+            text-align: center;
+            padding: 30px;
+            background: linear-gradient(135deg, #714b67, #875a7b);
+            border-radius: 15px;
+            margin-bottom: 25px;
+        }
+
+        header h1 {
+            font-size: 2rem;
+            margin-bottom: 8px;
+        }
+
+        .timer-bar {
+            background: rgba(255, 255, 255, 0.1);
+            padding: 12px 20px;
+            border-radius: 12px;
+            margin-bottom: 20px;
+            display: flex;
+            justify-content: space-between;
+            position: sticky;
+            top: 10px;
+            z-index: 100;
+            backdrop-filter: blur(10px);
+        }
+
+        .timer {
+            font-size: 1.3rem;
+            font-weight: bold;
+            color: #00d4aa;
+        }
+
+        .progress-info {
+            display: flex;
+            gap: 20px;
+        }
+
+        .progress-item span {
+            display: block;
+            font-size: 0.75rem;
+            opacity: 0.7;
+        }
+
+        .progress-item strong {
+            font-size: 1.1rem;
+            color: #00d4aa;
+        }
+
+        .module-section {
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 15px;
+            margin-bottom: 25px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .module-header {
+            background: linear-gradient(135deg, #714b67, #875a7b);
+            padding: 15px 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            cursor: pointer;
+        }
+
+        .module-header h2 {
+            font-size: 1.2rem;
+        }
+
+        .module-badge {
+            background: rgba(255, 255, 255, 0.2);
+            padding: 4px 12px;
+            border-radius: 15px;
+            font-size: 0.85rem;
+        }
+
+        .module-content {
+            padding: 20px;
+        }
+
+        .question-card {
+            background: rgba(255, 255, 255, 0.08);
+            border-radius: 12px;
+            padding: 20px;
+            margin-bottom: 15px;
+            border: 2px solid transparent;
+            transition: all 0.3s;
+        }
+
+        .question-card:hover {
+            border-color: #714b67;
+        }
+
+        .question-card.correct-answer {
+            border-color: #00d4aa !important;
+            background: rgba(0, 212, 170, 0.1);
+        }
+
+        .question-card.wrong-answer {
+            border-color: #ff6b6b !important;
+            background: rgba(255, 107, 107, 0.1);
+        }
+
+        .question-number {
+            display: inline-block;
+            background: #714b67;
+            padding: 4px 10px;
+            border-radius: 6px;
+            font-size: 0.8rem;
+            margin-bottom: 12px;
+        }
+
+        .question-text {
+            font-size: 1rem;
+            line-height: 1.5;
+            margin-bottom: 15px;
+            font-weight: 500;
+        }
+
+        .options {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .option {
+            background: rgba(255, 255, 255, 0.05);
+            border: 2px solid rgba(255, 255, 255, 0.1);
+            border-radius: 10px;
+            padding: 12px 15px;
+            cursor: pointer;
+            transition: all 0.3s;
+            display: flex;
+            align-items: flex-start;
+            gap: 10px;
+        }
+
+        .option:hover {
+            background: rgba(113, 75, 103, 0.3);
+            border-color: #714b67;
+        }
+
+        .option.selected {
+            background: rgba(113, 75, 103, 0.4);
+            border-color: #875a7b;
+        }
+
+        .option.correct {
+            background: rgba(0, 212, 170, 0.2);
+            border-color: #00d4aa;
+        }
+
+        .option.wrong {
+            background: rgba(255, 107, 107, 0.2);
+            border-color: #ff6b6b;
+        }
+
+        .option-marker {
+            width: 22px;
+            height: 22px;
+            border: 2px solid rgba(255, 255, 255, 0.3);
+            border-radius: 50%;
+            flex-shrink: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.75rem;
+            font-weight: bold;
+        }
+
+        .option.selected .option-marker {
+            background: #714b67;
+            border-color: #714b67;
+        }
+
+        .option.correct .option-marker {
+            background: #00d4aa;
+            border-color: #00d4aa;
+        }
+
+        .option.wrong .option-marker {
+            background: #ff6b6b;
+            border-color: #ff6b6b;
+        }
+
+        .option-text {
+            flex: 1;
+            line-height: 1.4;
+            font-size: 0.95rem;
+        }
+
+        .explanation {
+            display: none;
+            background: rgba(0, 212, 170, 0.1);
+            border-left: 4px solid #00d4aa;
+            padding: 12px 15px;
+            margin-top: 15px;
+            border-radius: 0 10px 10px 0;
+        }
+
+        .explanation.show {
+            display: block;
+        }
+
+        .explanation h4 {
+            color: #00d4aa;
+            margin-bottom: 6px;
+            font-size: 0.9rem;
+        }
+
+        .explanation p {
+            font-size: 0.85rem;
+            line-height: 1.5;
+            opacity: 0.9;
+        }
+
+        .btn-container {
+            display: flex;
+            gap: 15px;
+            justify-content: center;
+            margin-top: 30px;
+            flex-wrap: wrap;
+        }
+
+        .btn {
+            padding: 12px 30px;
+            border: none;
+            border-radius: 10px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #714b67, #875a7b);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(113, 75, 103, 0.4);
+        }
+
+        .btn-secondary {
+            background: rgba(255, 255, 255, 0.1);
+            color: white;
+            border: 2px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .results-modal {
+            display: none;
+            position: fixed;
+            inset: 0;
+            background: rgba(0, 0, 0, 0.9);
+            z-index: 1000;
+            overflow-y: auto;
+            padding: 20px;
+        }
+
+        .results-modal.show {
+            display: block;
+        }
+
+        .results-content {
+            max-width: 700px;
+            margin: 0 auto;
+            background: linear-gradient(135deg, #1a1a2e, #16213e);
+            border-radius: 15px;
+            padding: 30px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .score-circle {
+            width: 180px;
+            height: 180px;
+            border-radius: 50%;
+            margin: 0 auto 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            font-size: 2.5rem;
+            font-weight: bold;
+        }
+
+        .score-circle.pass {
+            background: linear-gradient(135deg, #00d4aa, #00a884);
+        }
+
+        .score-circle.fail {
+            background: linear-gradient(135deg, #ff6b6b, #ee5a5a);
+        }
+
+        .score-circle span {
+            font-size: 0.9rem;
+            opacity: 0.9;
+        }
+
+        .module-stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+            gap: 12px;
+            margin-top: 25px;
+        }
+
+        .stat-card {
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 10px;
+            padding: 15px;
+            text-align: center;
+        }
+
+        .stat-card h4 {
+            font-size: 0.85rem;
+            opacity: 0.8;
+            margin-bottom: 8px;
+        }
+
+        .stat-bar {
+            height: 6px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 3px;
+            overflow: hidden;
+            margin-top: 8px;
+        }
+
+        .stat-fill {
+            height: 100%;
+            border-radius: 3px;
+        }
+
+        .stat-fill.good {
+            background: #00d4aa;
+        }
+
+        .stat-fill.medium {
+            background: #ffc107;
+        }
+
+        .stat-fill.bad {
+            background: #ff6b6b;
+        }
+
+        .doc-ref {
+            font-size: 0.75rem;
+            color: #00d4aa;
+            font-style: italic;
+            margin-top: 6px;
+        }
+
+        /* Screenshot Gallery Styles */
+        .screenshots-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+            gap: 12px;
+        }
+
+        .screenshot-card {
+            position: relative;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 10px;
+            overflow: hidden;
+            cursor: pointer;
+            transition: all 0.3s;
+            border: 2px solid transparent;
+            aspect-ratio: 16/9;
+        }
+
+        .screenshot-card:hover {
+            border-color: #714b67;
+            transform: scale(1.02);
+            box-shadow: 0 8px 25px rgba(113, 75, 103, 0.3);
+        }
+
+        .screenshot-card img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .screenshot-num {
+            position: absolute;
+            top: 6px;
+            left: 6px;
+            background: rgba(113, 75, 103, 0.9);
+            padding: 2px 8px;
+            border-radius: 4px;
+            font-size: 0.75rem;
+            font-weight: bold;
+        }
+
+        /* Lightbox Styles */
+        .lightbox {
+            display: none;
+            position: fixed;
+            inset: 0;
+            background: rgba(0, 0, 0, 0.95);
+            z-index: 2000;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .lightbox.show {
+            display: flex;
+        }
+
+        .lightbox img {
+            max-width: 90%;
+            max-height: 85vh;
+            border-radius: 8px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
+        }
+
+        .lightbox-nav {
+            position: absolute;
+            top: 50%;
+            transform: translateY(-50%);
+            background: rgba(113, 75, 103, 0.8);
+            border: none;
+            color: white;
+            font-size: 2rem;
+            padding: 15px 20px;
+            cursor: pointer;
+            border-radius: 8px;
+            transition: all 0.3s;
+        }
+
+        .lightbox-nav:hover {
+            background: #714b67;
+        }
+
+        .lightbox-prev {
+            left: 20px;
+        }
+
+        .lightbox-next {
+            right: 20px;
+        }
+
+        .lightbox-close {
+            position: absolute;
+            top: 20px;
+            right: 25px;
+            background: rgba(255, 107, 107, 0.8);
+            border: none;
+            color: white;
+            font-size: 2rem;
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .lightbox-close:hover {
+            background: #ff6b6b;
+            transform: rotate(90deg);
+        }
+
+        .lightbox-counter {
+            position: absolute;
+            bottom: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: rgba(113, 75, 103, 0.8);
+            padding: 8px 20px;
+            border-radius: 20px;
+            font-size: 1rem;
+        }
+
+        @media (max-width: 768px) {
+            .screenshots-grid {
+                grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
+            }
+
+            .lightbox-nav {
+                padding: 10px 15px;
+                font-size: 1.5rem;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <header>
+            <h1>🎓 Odoo 19 Functional Certification</h1>
+            <p>Complete Practice Exam - 185 Questions | Pass: 70%</p>
+            <div style="margin-top:15px;display:flex;gap:10px;justify-content:center;flex-wrap:wrap;">
+                <button class="btn btn-primary" id="examModeBtn" onclick="setMode('exam')" style="padding:8px 20px;">📝
+                    Exam Mode</button>
+                <button class="btn btn-secondary" id="practiceModeBtn" onclick="setMode('practice')"
+                    style="padding:8px 20px;">📚 Practice Mode</button>
+            </div>
+            <p id="modeDescription" style="margin-top:10px;font-size:0.9rem;opacity:0.8;">Current: Practice Mode -
+                Instant feedback enabled</p>
+        </header>
+        <div class="timer-bar">
+            <div class="timer" id="timer">⏱️ 01:30:00</div>
+            <div class="progress-info">
+                <div class="progress-item"><span>Answered</span><strong id="answeredCount">0</strong></div>
+                <div class="progress-item"><span>Total</span><strong id="totalCount">70</strong></div>
+                <div class="progress-item"><span>Score</span><strong id="currentScore">0%</strong></div>
+            </div>
+        </div>
+        <div id="questions-container"></div>
+
+        <!-- Lightbox for viewing screenshots -->
+        <div class="lightbox" id="lightbox" onclick="closeLightbox(event)">
+            <button class="lightbox-nav lightbox-prev" onclick="navigateLightbox(-1, event)">❮</button>
+            <img id="lightboxImg" src="" alt="Full size screenshot">
+            <button class="lightbox-nav lightbox-next" onclick="navigateLightbox(1, event)">❯</button>
+            <span class="lightbox-counter" id="lightboxCounter">1 / 106</span>
+            <button class="lightbox-close" onclick="closeLightbox(event)">×</button>
+        </div>
+
+        <div class="btn-container">
+            <button class="btn btn-primary" onclick="submitExam()">Submit Exam</button>
+            <button class="btn btn-secondary" onclick="resetExam()">Reset</button>
+            <button class="btn btn-secondary" onclick="showAnswers()">Show All Answers</button>
+        </div>
+    </div>
+    <div class="results-modal" id="resultsModal">
+        <div class="results-content">
+            <h2 style="text-align:center;margin-bottom:20px;">📊 Exam Results</h2>
+            <div class="score-circle" id="scoreCircle"><span>Score</span><span id="finalScore">0%</span></div>
+            <p id="passStatus" style="text-align:center;font-size:1.2rem;margin-bottom:20px;"></p>
+            <h3 style="margin-bottom:15px;">Performance by Module</h3>
+            <div class="module-stats" id="moduleStats"></div>
+            <div class="btn-container" style="margin-top:25px;">
+                <button class="btn btn-primary" onclick="closeResults()">Review Answers</button>
+                <button class="btn btn-secondary" onclick="resetExam();closeResults();">Retake Exam</button>
+            </div>
+        </div>
+    </div>
+    <script>
+        const examData = [
+            // INTRODUCTION (5 questions)
+            { module: "Introduction", q: "How do you archive a company in Odoo?", options: ["Companies cannot be archived for traceability purposes.", "Contact Odoo, this needs to be performed by Odoo Support.", "Go to General Settings > Manage Companies > Select the company line (list view) > Action > Archive."], correct: 2, ref: "Odoo 19.0 - General Settings" },
+            { module: "Introduction", q: "Inside a record, how do you schedule an activity?", options: ["Click the 'Activity' button at the top of the chatter and choose the activity type, due date, assignee, and log a note.", "Click the 'New Activity' option in the chatter menu and select the activity type, responsible user, and deadline.", "Open the Activities panel from the record header and use 'Add Activity' to define the activity details."], correct: 0, ref: "Odoo 19.0 - Activities" },
+            { module: "Introduction", q: "How can a user enable or disable onboarding tours?", options: ["Through the Settings app, under User Preferences, by turning the Show Onboarding Tips option on or off.", "From the user menu, select Preferences > Interface Options, and uncheck Display Onboarding Tours.", "Activate Developer Mode, open the debug menu, then toggle the Onboarding option, or click 'Stop Tour' on the tour pop-up."], correct: 2, ref: "Odoo 19.0 - Developer Mode" },
+            { module: "Introduction", q: "How can you bulk add or remove followers from multiple records in Odoo?", options: ["In List View, select the records, click Actions, then choose Add/Remove Followers.", "In Form View, open each record and manage followers individually under the chatter.", "From Settings > Users & Companies, update the follower lists for all related records."], correct: 0, ref: "Odoo 19.0 - Chatter" },
+            { module: "Introduction", q: "How can you save a set of filters applied in the search bar in Odoo?", options: ["Click the Actions icon and select Save search results.", "Click Save current search in the Favorites dropdown.", "Go to Filters > Save > Search Results."], correct: 1, ref: "Odoo 19.0 - Search & Filters" },
+
+            // SALES (5 questions)
+            { module: "Sales", q: "How do you configure a pricelist that gives increasingly generous discounts based on quantity ordered?", options: ["Create one pricelist with two or more lines for each minimum quantity and discount rate you want to offer", "Create two pricelists with one line each for each minimum quantity and discount rate", "Create multiple products with different minimum quantities and add to quotation templates"], correct: 0, ref: "Odoo 19.0 - Pricelists", why: "A single pricelist can have multiple price rules with different minimum quantities. Odoo automatically applies the best matching rule." },
+            { module: "Sales", q: "What is the difference between the Discount and Formula Price Types when creating Pricelist Rules?", options: ["The Formula price type allows additional rules to be set in addition to a percentage discount", "The Discount price type supports requiring minimum quantity and Formula does not", "The Formula price type lets you set a Validity Period and Discount does not"], correct: 0, ref: "Odoo 19.0 - Pricelist Rules", why: "Formula price type provides advanced options including surcharges, margins, and rounding rules beyond simple percentage discounts." },
+            { module: "Sales", q: "What does it mean when a product has both 'Buy' and 'Replenish on Order (MTO)' boxes checked in the Inventory tab?", options: ["When a reordering rule set on the product is triggered, a manufacturing order will be generated if there is not sufficient inventory", "When a sales order is confirmed, a Request for Quotation to purchase the product from a vendor will be generated if there is not sufficient inventory", "When inventory for the product reaches 0, a Request for Quotation will be sent to a vendor to have them come and assemble more of the product in your warehouse"], correct: 1, ref: "Odoo 19.0 - Routes & Replenishment", why: "With Buy + MTO routes enabled, when a reordering rule triggers replenishment and stock is insufficient, Odoo generates the appropriate order based on the route." },
+            { module: "Sales", q: "Which is NOT a valid option for achievement-based commission plans?", options: ["A plan based on total amount of sales invoiced", "A plan based on total amount of sales quoted", "A plan based on total quantity of products sold"], correct: 1, ref: "Odoo 19.0 - Commission Plans", why: "Achievement-based commissions are calculated on INVOICED amounts (actual revenue) or quantities sold, not on quoted amounts which may not convert to sales." },
+            { module: "Sales", q: "What is a valid configuration for an achievement-based commission plan?", options: ["10% of all sales to a specific customer each quarter", "$1,000 for reaching $25,000 in sales each month", "5% of margin of all sales across a specific product category over a year"], correct: 1, ref: "Odoo 19.0 - Commission Plans", why: "Achievement-based plans reward reaching specific targets. A fixed bonus for reaching a sales target is a valid achievement configuration." },
+
+            // SURVEY (3 questions)
+            { module: "Survey", q: "Can survey participants be directed to specific questions based on previous answers?", options: ["Yes. It's called 'Parent Questions.' (Question > Settings tab > Determine Parent Question & Child Answer)", "Yes. It's called 'Conditional Display'. (Question > Options tab > Conditional Display section > Choose Triggering Answer)", "Yes, but only in 'Live Session' surveys when 'Allow Roaming' is enabled."], correct: 1, ref: "Odoo 19.0 - surveys/questions.html - Conditional Display" },
+            { module: "Survey", q: "How can you give participants exclusive access to a Live Session survey?", options: ["By creating a custom badge with a barcode for participants under the Settings tab.", "By enabling Private Mode under the Participants section and sharing the survey link manually with attendees.", "By setting a session code and requiring participants to log in under the Options tab."], correct: 1, ref: "Odoo 19.0 - Survey Live Sessions", why: "Private Mode restricts survey access to only those with the direct link. Combined with manual sharing, this ensures exclusive access to the Live Session." },
+            { module: "Survey", q: "How can participants in a Live Session receive a bonus for answering quickly?", options: ["Analyze response time in Reporting and send them a reward manually.", "Activate 'Reward quick answers' in the Live Session section of the Options tab.", "Enable 'Score by time' option in the Questions tab."], correct: 1, ref: "Odoo 19.0 - Survey Live Sessions" },
+
+            // CRM (9 questions)
+            { module: "CRM", q: "What is the visual effect of setting high priority on an opportunity?", options: ["The opportunity moves to the top of its stage in Kanban view.", "The opportunity is visually flagged with a priority icon but remains in its position.", "The opportunity temporarily appears at top of stage until page refresh."], correct: 1, ref: "Odoo 19.0 - CRM Pipeline" },
+            { module: "CRM", q: "What happens to an opportunity marked as 'Lost'?", options: ["Archived and hidden from main dashboard but accessible via Filters > Lost.", "Moved to Lost stage in Kanban and remains visible but inactive.", "Archived and removed from all dashboards but accessible through advanced search."], correct: 0, ref: "Odoo 19.0 - Lost opportunities" },
+            { module: "CRM", q: "You need to add a contact with a different address than the company. What should you do?", options: ["On company's contact record, under Contacts & Addresses tab, add contact with 'Other Address' type.", "On company's contact record, under Contacts & Addresses tab, add contact with 'Invoice Address' type.", "Create a separate contact record and link it using the Parent Company field."], correct: 0, ref: "Odoo 19.0 - Contacts" },
+            { module: "CRM", q: "What does the Opportunities smart button display on a company's contact record?", options: ["All opportunities related to the company and its contacts.", "Only opportunities that have been won.", "Only opportunities that have scheduled activities."], correct: 0, ref: "Odoo 19.0 - CRM" },
+            { module: "CRM", q: "What does the Forecast report in Odoo allow you to do?", options: ["Quickly view all opportunities organized by expected closing date.", "Analyze expected revenue for a future period, such as the next quarter.", "Record assumptions about market trends and share with your team."], correct: 1, ref: "Odoo 19.0 - CRM Reporting" },
+            { module: "CRM", q: "Which is true about Recurring Revenues in Odoo?", options: ["Available only if Subscriptions app is installed.", "Can be activated on each individual opportunity.", "Can be activated in CRM Settings."], correct: 2, ref: "Odoo 19.0 - CRM Settings" },
+            { module: "CRM", q: "What is one benefit of using the Gamification feature in Odoo?", options: ["Salespeople can create more visually appealing quotations.", "Salespeople feel more motivated.", "Salespeople play mini games when they close a deal."], correct: 1, ref: "Odoo 19.0 - Gamification" },
+            { module: "CRM", q: "How can you filter leads by company size when using Generate Leads?", options: ["Use the Filter on Size option.", "Only available in Developer Mode.", "Filter based on company revenue instead of size."], correct: 0, ref: "Odoo 19.0 - Lead Mining" },
+            { module: "CRM", q: "How can you view opportunity stage on My Activities page in List view?", options: ["Stage is not in default view; you must customize columns.", "In the Current Status column.", "In the Stage column."], correct: 2, ref: "Odoo 19.0 - CRM Pipeline" },
+
+            // AI (5 questions)
+            { module: "AI", q: "What does it mean when an AI Agent is not assigned any Topics?", options: ["Agent can provide information but cannot make database changes.", "Agent can only perform tasks based on its Sources.", "Leaving Topics empty means agent has access to all topics and tools."], correct: 2, ref: "Odoo 19.0 - AI Agents" },
+            { module: "AI", q: "How can you enable AI to transcribe meetings in Odoo?", options: ["In Discuss app, go to Configuration > Voice & Video Settings > enable AI Transcription.", "In Knowledge > Browse Templates, select Meeting Minutes.", "Type '/' to open command palette on an article/note/description and select Voice Transcript."], correct: 2, ref: "Odoo 19.0 - AI Features" },
+            { module: "AI", q: "Installing the AI app is required to utilize AI features in Odoo.", options: ["True - AI features are only available once AI app is installed.", "False - Installing AI app allows customizing AI Agents, but many features work without it.", "False - AI app is optional for built-in features like text suggestions or search."], correct: 1, ref: "Odoo 19.0 - AI" },
+            { module: "AI", q: "What does 'Ask AI Search' feature do?", options: ["Turn plain-language search into the right database filters automatically.", "Generate AI suggestions for improving your search terms.", "Search only within Knowledge articles and uploaded files."], correct: 0, ref: "Odoo 19.0 - AI Search" },
+            { module: "AI", q: "If an AI Agent with 'Restrict to Sources' is asked something outside its scope, how does it respond?", options: ["It informs the user it doesn't have the information or permissions to respond.", "It automatically switches to another provider.", "It guesses the most likely answer based on previous responses."], correct: 0, ref: "Odoo 19.0 - AI Agents" },
+
+            // MARKETING (3 questions)
+            { module: "Marketing", q: "What condition is required to send 'Push Notifications'?", options: ["Submit email.", "Enable push.", "Allowed."], correct: 1, ref: "Odoo 19.0 - Push Notifications", why: "Users must have push notifications enabled. The 'Enable push' option activates the ability to receive push notifications.", feedback: "UNCERTAIN: Need to verify from Odoo slides. Options are Submit email, Enable push, or Allowed." },
+            { module: "Marketing", q: "What happens when you change an event state to 'cancelled'?", options: ["Event attendees are automatically sent an email using the email template 'Event: Cancelled', and the 'Register' button changes to a 'Cancelled' button on the website.", "Automatically moves the event to the 'Ended' stage, and emails attendees using the 'Event: Cancelled' email template.", "Replaces the 'Register' button with a 'Cancelled' image on the event website and even Kanban card, and disables outgoing emails for the event."], correct: 2, ref: "Odoo 19.0 - Events", why: "Cancelling an event replaces the Register button with Cancelled image and disables outgoing emails.", feedback: "UNCERTAIN: Need to verify. Previous answer was wrong." },
+            { module: "Marketing", q: "What are the benefits of event 'slots'?", options: ["Attendees can select the event they want to attend.", "Attendees can select from either an in-person event or a virtual event for the same time slot.", "Attendees can view the different ticket types, and view the difference between the ticket benefits."], correct: 1, ref: "Odoo 19.0 - Events", why: "Event slots allow attendees to choose between in-person or virtual attendance for the same time slot.", feedback: "UNCERTAIN: Need to verify. Previous answer was wrong." },
+
+            // ECOMMERCE (2 questions)
+            { module: "eCommerce", q: "Where can you automate Ribbons and Badges? How many 'assign' options?", options: ["Backend in Product Ribbons. Options: 'Manually', 'On Sale', 'When new', 'When out of stock'.", "Backend of specific product in Sales tab. Options: 'Manually', 'On Sale', 'When new', 'When out of stock'.", "Backend of specific product in Attributes & Variants tab. Options: 'Manually', 'On Sale', 'When new'."], correct: 1, ref: "Odoo 19.0 - eCommerce Ribbons" },
+            { module: "eCommerce", q: "How can you edit variant selection display on a website product page?", options: ["Click attribute and change Block display type in Style tab in website editor.", "Change attribute display type in the Style tab in website editor.", "Activate developer mode and go to Theme tab in website editor."], correct: 1, ref: "Odoo 19.0 - eCommerce Variants" },
+
+            // KNOWLEDGE (3 questions)
+            { module: "Knowledge", q: "What happens if you lock an article in the Workspace?", options: ["You cannot access the article.", "You can only read the article.", "You can still edit it, even if you're not the author."], correct: 1, ref: "Odoo 19.0 - Knowledge" },
+            { module: "Knowledge", q: "Which powerbox commands are exclusive to Knowledge?", options: ["Index, Item Kanban/Cards/List/Calendar", "Separator, Checklist, Quote, Media, Emoji", "Banner Info/Success/Warning/Danger"], correct: 0, ref: "Odoo 19.0 - Knowledge Powerbox" },
+            { module: "Knowledge", q: "How do you create a nested article?", options: ["Click 'New Article' in the top-left corner.", "Create a copy of the parent article.", "Hover over an article in the sidebar tree and click the (+) icon."], correct: 2, ref: "Odoo 19.0 - Knowledge Articles" },
+
+            // PROJECT (8 questions)
+            { module: "Project", q: "What does NOT trigger new task creation when recurrence is set?", options: ["When task is moved to last Kanban stage", "When task is marked as canceled", "When task is marked as done"], correct: 1, ref: "Odoo 19.0 - Project Recurrence" },
+            { module: "Project", q: "Which users can view a private task?", options: ["Only creator and users with 'Project Administrator' access right.", "All users assigned to the task and all followers.", "All followers and users with 'Project Administrator' access right."], correct: 1, ref: "Odoo 19.0 - Project Tasks" },
+            { module: "Project", q: "How are tasks in 'My Tasks' pipeline managed?", options: ["Moved automatically based on deadline", "Moved automatically based on next activity's date", "You move them manually across stages"], correct: 2, ref: "Odoo 19.0 - My Tasks" },
+            { module: "Project", q: "How are project milestones marked as reached?", options: ["You mark them as reached manually", "Milestones are automatically marked as reached when all their tasks are marked as done", "Milestones are automatically marked as reached when all their tasks have been moved to the last Kanban stage"], correct: 1, ref: "Odoo 19.0 - Project Milestones", why: "Milestones are automatically marked as reached when ALL linked tasks have 'Done' status. This provides automatic progress tracking." },
+            { module: "Project", q: "When is a milestone displayed in green?", options: ["When milestone's deadline is today", "When all its tasks have been marked as done or canceled", "When the milestone is marked as reached"], correct: 2, ref: "Odoo 19.0 - Project Dashboard - green when reached" },
+            { module: "Project", q: "How can you schedule a previously created task?", options: ["By selecting a time frame in Gantt view", "By defining planned date on task form view", "By selecting time frame in Gantt view OR defining planned date on form view"], correct: 2, ref: "Odoo 19.0 - Project Scheduling" },
+            { module: "Project", q: "When creating a task from Kanban view, adding '#priority' to the title will:", options: ["Add a 'priority' tag to the task", "Set the task's priority to high", "Add the text '#priority' to the task's title"], correct: 0, ref: "Odoo 19.0 - Project Quick Create" },
+            { module: "Project", q: "The number of analytic accounts on a project is limited by:", options: ["Tasks in the project", "Analytic plans in the project", "Kanban stages in the project"], correct: 1, ref: "Odoo 19.0 - Analytic Accounts" },
+
+            // TIMESHEETS (5 questions)
+            { module: "Timesheets", q: "What does it mean when a timesheet line is in italics?", options: ["The line has been invoiced", "The line has been validated", "The line is for a project/task where user hasn't submitted timesheet during displayed period"], correct: 2, ref: "Odoo 19.0 - Timesheets Grid" },
+            { module: "Timesheets", q: "Which statement is true about Time Off and Timesheets?", options: ["Time off entries automatically generate timesheet entries", "Time off and timesheets entries are never linked", "You have to add time off entries manually in timesheets"], correct: 0, ref: "Odoo 19.0 - Timesheets & Time Off" },
+            { module: "Timesheets", q: "How can you display rankings on the timesheet leaderboard?", options: ["By billing rate and hours invoiced", "By total time and hours invoiced", "By billing rate and total time"], correct: 2, ref: "Odoo 19.0 - Timesheets Leaderboard" },
+            { module: "Timesheets", q: "What Grid view feature helps identify missing hours in timesheets?", options: ["By filtering by missing hours", "The color-code system", "The 'Spot missing hours' feature"], correct: 1, ref: "Odoo 19.0 - Timesheets Grid View" },
+            { module: "Timesheets", q: "On 'All Timesheets' view, what does it mean when duration is in orange?", options: ["Employee worked overtime on that day", "Employee took time off on that day", "Employee worked undertime on that day"], correct: 2, ref: "Odoo 19.0 - Timesheets Color Coding" },
+
+            // ACCOUNTING (11 questions)
+            { module: "Accounting", q: "What depreciation methods are available for an asset?", options: ["Declining, Straight line then Declining, and Straight line", "Declining, Declining then Straight line, and Straight line", "Declining, Declining then Straight line, Straight line, and Progressive"], correct: 1, ref: "Odoo 19.0 - Assets - Depreciation Methods" },
+            { module: "Accounting", q: "How are follow-up actions triggered?", options: ["Based on days overdue from creation date of invoice", "Based on days overdue from due date of invoice", "Based on days overdue from invoice date"], correct: 1, ref: "Odoo 19.0 - Follow-ups" },
+            { module: "Accounting", q: "Which feature auto-changes income/expense account based on customer/vendor?", options: ["Fiscal Positions", "Fiscal Localizations", "Account Groups"], correct: 0, ref: "Odoo 19.0 - Fiscal Positions" },
+            { module: "Accounting", q: "Where is the Catalog view available?", options: ["On invoices", "On vendor bills", "On invoices and vendor bills"], correct: 2, ref: "Odoo 19.0 - Accounting Catalog View" },
+            { module: "Accounting", q: "How can you register full payment for invoice using installment payment method?", options: ["Default amount when registering is the full amount", "Manually enter full amount or click 'full amount'", "Must be done in multiple payments to respect installments"], correct: 1, ref: "Odoo 19.0 - Payment Registration" },
+            { module: "Accounting", q: "How can you configure payments to create journal entries automatically?", options: ["Payments automatically create journal entries by default", "Enable 'Auto check on post' option in the journal", "Add outstanding payments/receipts account to payment method in journal"], correct: 2, ref: "Odoo 19.0 - Payment Configuration" },
+            { module: "Accounting", q: "How can you include spelled out invoice total on an invoice report?", options: ["In Accounting settings, enable 'Total amount of invoice in letters'", "In invoice form view in Studio, change Total widget to 'Amount in letters'", "In invoice report in Studio, change Total widget to 'Amount in letters'"], correct: 0, ref: "Odoo 19.0 - Accounting Settings" },
+            { module: "Accounting", q: "How can you send payment reminder for all overdue invoices except one?", options: ["In Invoices list view, search Overdue and select desired ones, then Actions > Invoice Follow-ups", "In customer Follow-up report, enable toggle in No Follow-up column for invoice to exclude", "In customer form Accounting tab, click Send in Invoice Follow-ups and select invoice"], correct: 1, ref: "Odoo 19.0 - Follow-up Reports" },
+            { module: "Accounting", q: "How to replace 15% tax with 0% for Tax Exempt fiscal position?", options: ["In Tax Mapping tab of fiscal position, set 15% as Tax on Product and 0% as Tax to Apply", "On the 15% tax record, set Fiscal Position to Tax Exempt and add 0% to Replaces field", "On the 0% tax record, set Fiscal Position to Tax Exempt and add 15% to Replaces field"], correct: 0, ref: "Odoo 19.0 - Fiscal Position Tax Mapping" },
+            { module: "Accounting", q: "How to update inventory account value to reflect current stock?", options: ["Go to Accounting > Review > Inventory Valuation and click Generate Entry", "Go to Chart of Accounts, select inventory accounts, click Update Value", "Inventory accounts are automatically kept up to date based on current stock"], correct: 2, ref: "Odoo 19.0 - Inventory Valuation" },
+            { module: "Accounting", q: "Which correctly describes periodic or perpetual accounting?", options: ["Periodic: vendor bills recorded as expenses, inventory adjusted in closing entry", "Periodic: vendor bills recorded as assets, expensed when goods sold", "Perpetual: vendor bills recorded as expenses, inventory adjusted in closing entry"], correct: 0, ref: "Odoo 19.0 - Accounting Methods" },
+
+            // SPREADSHEET (3 questions)
+            { module: "Spreadsheet", q: "When you upload Excel/CSV and open with Odoo Spreadsheet, what happens to original file?", options: ["By default deleted, but you can opt to preserve", "Original file moved to 'Uploaded Files' folder", "By default preserved unless you check 'Send source file to trash'"], correct: 2, ref: "Odoo 19.0 - Spreadsheet Import" },
+            { module: "Spreadsheet", q: "What does blue globe icon in upper-right corner signify about regional settings?", options: ["Regional settings are same as your user profile", "Regional settings are different from your user profile", "You can click to change regional settings if they don't match"], correct: 1, ref: "Odoo 19.0 - Spreadsheet Regional Settings" },
+            { module: "Spreadsheet", q: "How can external user access spreadsheet with dynamic Odoo data?", options: ["External user can only access in read-only mode", "External user cannot access spreadsheet with dynamic Odoo data", "External user with read-only access can click 'Request edit access'"], correct: 1, ref: "Odoo 19.0 - Spreadsheet Sharing - Freeze and share required" },
+
+            // HR (5 questions)
+            { module: "HR", q: "Time Off Types can be configured in what increments?", options: ["Day, Half Day, or Hours", "Only Day or Hours", "Only Day"], correct: 0, ref: "Odoo 19.0 - Time Off Types" },
+            { module: "HR", q: "How can you have superheroes on your team?", options: ["By using the Recruitment app", "By using the Online Jobs module", "By using the Referrals app"], correct: 2, ref: "Odoo 19.0 - Referrals Gamification" },
+            { module: "HR", q: "In Payroll, what source creates Work Entries?", options: ["Working Schedules, Contracts, and Projects", "Working Schedules, Employees, and Time Off", "Working Schedules, Attendance, and Planning"], correct: 2, ref: "Odoo 19.0 - Work Entries" },
+            { module: "HR", q: "In Employees app, what does the History smart button do?", options: ["Allows you to revert to any previous contract", "Shows all versions of Employee record and allows viewing past records", "Shows all payslips grouped by job title and salary"], correct: 1, ref: "Odoo 19.0 - Employee History" },
+            { module: "HR", q: "What method is unavailable for employee sign in using Attendances kiosk?", options: ["A barcode on an employee badge", "Manually selecting the employee", "A biometric signature"], correct: 2, ref: "Odoo 19.0 - Attendance Kiosk" },
+
+            // POS (3 questions)
+            { module: "POS", q: "When configuring bookings, what enables selection of existing tables?", options: ["Set 'Assignment' field to 'By visitor'", "Enable 'Manage Capacities'", "Set 'Book' field to 'Resources'"], correct: 2, ref: "Odoo 19.0 - POS Bookings" },
+            { module: "POS", q: "Why does printer print receipts but not kitchen orders?", options: ["You selected the wrong printer type", "You didn't add the product categories to print", "You enabled 'Basic Receipt'"], correct: 1, ref: "Odoo 19.0 - POS Kitchen Printers" },
+            { module: "POS", q: "Which setting sends print request to printer automatically?", options: ["Print Full Receipt", "Early Receipt Printing", "Automatic Receipt Printing"], correct: 2, ref: "Odoo 19.0 - POS Printing" },
+
+            // PURCHASE (7 questions)
+            { module: "Purchase", q: "What does setting a product's 'Control Policy' to 'On ordered quantities' do?", options: ["When creating a vendor bill, a product's price comes from the purchase order, and the quantity to invoice comes from the receipt", "When a purchase order is confirmed, a vendor bill is automatically generated", "When uploading a vendor bill, the quantity and price are automatically set to the ordered amount"], correct: 0, ref: "Odoo 19.0 - Purchase Control Policy", why: "With 'On ordered quantities', the price is locked from the PO but the quantity invoiced reflects what was actually received." },
+            { module: "Purchase", q: "If you have several lines for the same vendor in a product purchase price list, which one will be selected?", options: ["The first in the list", "The cheapest if the condition of quantity is met", "The one with the biggest quantity under the quantity ordered"], correct: 1, ref: "Odoo 19.0 - Vendor Pricelist Selection", why: "Odoo selects the cheapest price among vendors whose minimum quantity requirement is met by the order quantity." },
+            { module: "Purchase", q: "When creating an RFQ, which of the following can you NOT use to search for a product?", options: ["Product name", "Vendor product code", "Product Vendor Pricelist"], correct: 2, ref: "Odoo 19.0 - RFQ Product Search", why: "You can search by product name or vendor product code, but not by the vendor pricelist itself." },
+            { module: "Purchase", q: "When you move a vendor pricelist to the top of the list on a product form, which of the following happens?", options: ["Odoo automatically adds the product to the RFQ when the vendor is selected", "If no Preferred Vendor is set, an RFQ generated from a reordering rule will default to the vendor listed at the top of the product's vendor pricelist", "A pop-up box will appear to suggest that product when you add the vendor to a RFQ"], correct: 1, ref: "Odoo 19.0 - Vendor Pricelist Priority", why: "The top vendor in the pricelist becomes the default when no preferred vendor is explicitly set." },
+            { module: "Purchase", q: "Your vendor sells fabric in meters, but your company is based in the U.S. and tracks inventory in yards. You create an RFQ for 10 meters of fabric. What will you see on the related receipt?", options: ["The receipt also shows 10 meters, but Odoo automatically converts this to 10.94 yards the moment it enters stock", "The receipt shows 10 yards, and you must manually adjust quantities to match the vendor's unit", "The receipt shows 10.94 yards"], correct: 2, ref: "Odoo 19.0 - UoM Conversion", why: "Odoo automatically converts units - 10 meters = 10.94 yards appears directly on the receipt." },
+            { module: "Purchase", q: "When creating a new request for quotation (RFQ), are you able to link it to an existing RFQ as an alternative?", options: ["No, alternative RFQs must be created from the 'Alternatives' tab of an existing, pre-populated RFQ with a listed vendor and products", "No, Odoo does not allow multiple RFQs to be linked to each other unless the same vendor is listed on each", "Yes, by clicking 'Link to Existing RfQ', under the 'Alternatives' tab on a new request for quotation"], correct: 2, ref: "Odoo 19.0 - Alternative RFQs", why: "You CAN link a new RFQ to an existing one by clicking 'Link to Existing RfQ' under the Alternatives tab on the new RFQ." },
+            { module: "Purchase", q: "When you activate the Suggest toggle in the product category, and click 'Add all' how does Odoo calculate the suggested quantity in blue on each product card?", options: ["It automatically selects all products with negative forecasted quantities", "It uses recent consumption or forecast data to estimate daily demand, multiplies by the chosen replenishment period, and compares this to on-hand stock to compute what's needed", "There is no suggested quantity in blue. The suggested quantity appears inside the input that's between the '-' and '+' buttons"], correct: 1, ref: "Odoo 19.0 - Replenishment Suggestions", why: "Odoo calculates suggested quantities using consumption/forecast data multiplied by replenishment period, then compares to current stock." },
+
+            // INVENTORY (10 questions)
+            { module: "Inventory", q: "When creating warehouse, which field determines how you receive goods?", options: ["Buy to Resupply", "Incoming Shipments", "Routes"], correct: 1, ref: "Odoo 19.0 - Warehouse Configuration" },
+            { module: "Inventory", q: "Receive 10 units from vendor into WH/Stock. How do stock levels change?", options: ["Vendor: +10 / Internal: -10", "Vendor: -10 / Internal: +10", "Both increase by +10"], correct: 1, ref: "Odoo 19.0 - Stock Moves" },
+            { module: "Inventory", q: "What happens when you validate a delivery order?", options: ["Subtracts quantities from Customer Location", "Subtracts from Internal Location and adds to Customer Location", "Adds quantities to Customer Location"], correct: 1, ref: "Odoo 19.0 - Delivery Orders" },
+            { module: "Inventory", q: "Warehouse divided into zones. Want pickers to process several orders while minimizing walking. Best config?", options: ["Enable Batch Transfers and group operations by zone's stock location", "Use cluster picking so each picker handles pick, pack, ship separately", "Use Wave Transfers and assign picker to retrieve items in each zone"], correct: 2, ref: "Odoo 19.0 - Wave Transfers" },
+            { module: "Inventory", q: "Delivery method Based on Rules: <$50 = $13, >$50 = $0. Order is $55. Delivery cost?", options: ["$13", "$0", "$55"], correct: 1, ref: "Odoo 19.0 - Delivery Methods" },
+            { module: "Inventory", q: "Product auto-replenished in two warehouses: one via buying, other via manufacturing. How to configure?", options: ["Create two products, set Method to Buy and alternative to Manufacture", "Create multiple reordering rules for same product, each linked to different Warehouse and Route", "Create one reordering rule and assign multiple warehouses"], correct: 1, ref: "Odoo 19.0 - Reordering Rules" },
+            { module: "Inventory", q: "Two reordering rules: Warehouse A (Buy) and Warehouse B (Manufacturing). Stock drops in B. What happens?", options: ["Rule fails - only one reordering rule allowed per product", "Odoo uses first rule (Buy) because it prioritizes it", "Triggers manufacturing order according to second rule"], correct: 2, ref: "Odoo 19.0 - Multiple Reordering Rules" },
+            { module: "Inventory", q: "Inventory adjustment increases stock from 0 to 5. What are location types of stock move?", options: ["Move from Internal Location to Inventory Adjustment location", "Move from Inventory Loss location to Internal Location", "Move between two Internal Locations"], correct: 1, ref: "Odoo 19.0 - Inventory Adjustments" },
+            { module: "Inventory", q: "Update on-hand quantities from 5 to 4. What stock moves created?", options: ["4 units from Internal to Inventory Loss", "1 unit from Internal to Inventory Loss", "1 unit from Inventory Loss to Internal"], correct: 1, ref: "Odoo 19.0 - Inventory Adjustments" },
+            { module: "Inventory", q: "Which costing method(s) to auto-include landed costs in inventory valuation?", options: ["AVCO", "Any costing method; landed costs always affect value", "Average cost or FIFO"], correct: 2, ref: "Odoo 19.0 - Landed Costs" },
+
+            // MRP (12 questions)
+            { module: "MRP", q: "How are costs of by-products accounted for?", options: ["Only by setting by-product cost share on BoM", "Only by setting by-product cost share on manufacturing order", "By either setting cost share on BoM or manufacturing order"], correct: 2, ref: "Odoo 19.0 - By-products" },
+            { module: "MRP", q: "MPS shows 110 units demand, BoM Batch Size 40. What happens when you click Order?", options: ["3 MOs: 40, 40, 30 units", "3 MOs: 40 units each", "4 MOs: 30 units each"], correct: 0, ref: "Odoo 19.0 - MPS Batch Size" },
+            { module: "MRP", q: "How to configure manufacturing product for subcontracting?", options: ["Enable 'Subcontracted' checkbox on product form", "Enable 'Subcontracting' option in BoM Type field on product's BoM", "Add 'Subcontract' route on sales order with the product"], correct: 1, ref: "Odoo 19.0 - Subcontracting" },
+            { module: "MRP", q: "What does the capacity of a work center represent?", options: ["The number of operations from a BoM the work center can perform in parallel", "The number of product units the work center can manufacture in parallel", "The number of workers at the work center"], correct: 0, ref: "Odoo 19.0 - Work Centers", why: "Work center capacity refers to how many BoM operations can run simultaneously, not product units. This determines parallel processing capability.", feedback: "CRITICAL: Exam answer differs from some documentation. The exam specifically says 'operations from a BoM', not 'product units'." },
+            { module: "MRP", q: "2-step manufacturing. Consume extra component during work order. What happens?", options: ["New transfer created for extra product from stock to pre-production", "Existing transfer is modified", "No picking created - quantity at pre-production location decreased"], correct: 2, ref: "Odoo 19.0 - 2-Step Manufacturing" },
+            { module: "MRP", q: "2-step manufacturing. Decide to produce more. What happens with pre-production picking?", options: ["Nothing at first, backorder created after confirming picking", "Component quantities updated to reflect new quantities needed", "Warning raised, must click 'Update Quantity'"], correct: 1, ref: "Odoo 19.0 - 2-Step Manufacturing" },
+            { module: "MRP", q: "Which is true about splitting/merging manufacturing orders?", options: ["Only MOs of identical products with same BoM may be merged", "Only MOs in draft state may be merged", "Only MOs of even quantities may be split"], correct: 0, ref: "Odoo 19.0 - MO Merge" },
+            { module: "MRP", q: "Where to access consolidated overview of component lead times and product availability?", options: ["On Master Production Schedule", "On BoM 'Overview'", "On manufacturing order"], correct: 1, ref: "Odoo 19.0 - BoM Overview" },
+            { module: "MRP", q: "Which is NOT shown on MO card on Shop Floor dashboard?", options: ["Estimated time to complete MO", "MO number", "Product being manufactured"], correct: 0, ref: "Odoo 19.0 - Shop Floor" },
+            { module: "MRP", q: "How to start timer for work order in Shop Floor module?", options: ["Click header of work order card", "Click 'Start Timer' at bottom of work order card", "Work orders are not timed by Odoo"], correct: 0, ref: "Odoo 19.0 - Shop Floor Timer" },
+            { module: "MRP", q: "What is 'Register Production' step on work order card in Shop Floor used for?", options: ["Confirm manufacturing order completed", "Mark work order as 'In Progress'", "Register number of units manufactured"], correct: 2, ref: "Odoo 19.0 - Shop Floor Production" },
+            { module: "MRP", q: "Effect of 'Replenish Scrapped Quantities' when scrapping components from MO in Shop Floor?", options: ["Purchase order created to buy replacement components", "This option does not appear when scrapping components", "Pick Components transfer auto-created to replace scrapped components"], correct: 2, ref: "Odoo 19.0 - Shop Floor Scrapping" },
+
+            // STUDIO (6 questions)
+            { module: "Studio", q: "In Form view, key difference between Primary and Secondary button?", options: ["Design (color/prominence) guides user's main action", "Primary executes server actions, secondary calls Python methods", "Secondary buttons hidden on mobile, primary visible"], correct: 0, ref: "Odoo 19.0 - Studio Buttons" },
+            { module: "Studio", q: "To display star rating for field with 4 values (0-3 stars), which field type and widget?", options: ["Selection field with Badge widget", "Priority field with Radio widget", "Selection field with Priority widget"], correct: 2, ref: "Odoo 19.0 - Studio Widgets" },
+            { module: "Studio", q: "Which property displays example of how field should be completed?", options: ["Placeholder", "Help Tooltip", "Default Value"], correct: 0, ref: "Odoo 19.0 - Studio Field Properties" },
+            { module: "Studio", q: "In List view, how can you control column width?", options: ["Set width using CSS class on List view container", "Can't be controlled - width determined by longest value", "Define fixed column width in pixels"], correct: 2, ref: "Odoo 19.0 - Studio List View" },
+            { module: "Studio", q: "Effect of editing Footer content in Report Editor?", options: ["Footer of all standard and custom reports modified", "Only footer of that specific report modified", "Only footers of Internal reports modified"], correct: 1, ref: "Odoo 19.0 - Studio Reports" },
+            { module: "Studio", q: "How to trigger automated action only upon record creation?", options: ["Set Trigger to 'On create'", "Set Trigger to 'On save' with 'ID is not set' as Before Update Domain", "Set Trigger to 'Values Updated' and select 'Creation Date' field"], correct: 0, ref: "Odoo 19.0 - Automation Rules" },
+
+            // ADDITIONAL QUESTIONS FROM EXAM SCREENSHOTS
+
+            // Introduction - Additional
+            { module: "Introduction", q: "If you were in any list view, how would you display 1,000 records at once?", options: ["All records are always displayed.", "By clicking on the page indicator next to the view options and entering 1-1000.", "80 records is the maximum number of results that can be displayed in list view."], correct: 1, ref: "Odoo 19.0 - List View Navigation", why: "You can change the displayed record range by clicking the page indicator (e.g., '1-80') and typing a custom range like '1-1000'." },
+            { module: "Introduction", q: "What are the two types of contacts in Odoo?", options: ["Person and Company.", "Person and Joint.", "Company and Not-for-Profit."], correct: 0, ref: "Odoo 19.0 - Contacts", why: "Odoo has two fundamental contact types: Individual (Person) and Company. This determines the contact structure." },
+
+            // Sales - Additional
+            { module: "Sales", q: "Which of the following actions can customers NOT perform in the customer portal?", options: ["Manage pricelists for their most frequently purchased products", "Add funds to their eWallet", "Submit partial payments and down payments for invoices (if the payment terms allow)"], correct: 0, ref: "Odoo 19.0 - Customer Portal", why: "Customers cannot manage pricelists - this is an administrative function. They CAN add eWallet funds and make partial payments." },
+            { module: "Sales", q: "How would you configure Odoo so that 'Office Chair' appears as a suggested option when a customer adds 'Conference Chair' to their cart?", options: ["List Office Chair as 'Optional Product' on Conference Chair's product form (under 'Sales' tab)", "List Office Chair as 'Alternative Product' on Conference Chair's form (under 'Inventory' tab)", "List Conference Chair as 'Alternative Product' on Office Chair's form (under 'General Information' tab)"], correct: 0, ref: "Odoo 19.0 - Product Cross-selling", why: "Optional Products in the Sales tab are suggested during cart/checkout. Alternative Products appear as substitutes on the product page." },
+            { module: "Sales", q: "Which of the following is NOT a 'Variant Creation' option while creating product attributes?", options: ["Instantly", "Formula-based", "Dynamically"], correct: 1, ref: "Odoo 19.0 - Product Variants", why: "Variant creation modes are: Instantly, Dynamically, and Never. 'Formula-based' is NOT a variant creation option." },
+            { module: "Sales", q: "How do you configure an upsell product to appear at the bottom of another product page in eCommerce?", options: ["In 'Sales' tab, enter upsell product in 'Alternative Products' field", "Drag and drop the product from Odoo product page in website editor", "There is no way to add upsell product to bottom of product page"], correct: 0, ref: "Odoo 19.0 - eCommerce Upselling", why: "Alternative Products in the Sales tab appear at the bottom of the product page as 'You might also like' suggestions." },
+            { module: "Sales", q: "Product is configured under Sales and appears on quotations, but not in eCommerce shop. Why?", options: ["Under eCommerce minimum price of $7.99", "Need to check 'Is Published' in Sales tab or toggle to 'Published' on website", "Products cannot be on both sales quotations and eCommerce"], correct: 1, ref: "Odoo 19.0 - eCommerce Publishing", why: "Products must be explicitly published to appear on the eCommerce website via 'Is Published' checkbox or website toggle." },
+
+            // Website - Additional
+            { module: "Website", q: "You added Newsletter popup and want to edit it. How can you find it?", options: ["Go into 'Edit' mode and wait for popup to appear", "Click 'Newsletter Popup' in 'Invisible Elements' section at bottom of website editor", "Click Website > Site > Properties"], correct: 1, ref: "Odoo 19.0 - Website Editor", why: "Popups are hidden elements accessed through the 'Invisible Elements' section at the bottom of the website editor." },
+            { module: "Website", q: "How can you superimpose two images?", options: ["Activate 'grid' mode on the block, add an image, drag it over a second image", "Click on image, click 'superimpose' button and add second image", "Only using CSS"], correct: 0, ref: "Odoo 19.0 - Website Builder", why: "Grid mode allows precise positioning of elements, enabling you to overlap images by dragging one over another." },
+            { module: "Website", q: "On which device can you hide certain content blocks when editing your website?", options: ["Desktop", "Desktop and mobile", "Desktop, mobile, and tablet"], correct: 1, ref: "Odoo 19.0 - Responsive Design", why: "Odoo allows hiding content blocks specifically for Desktop or Mobile views. Tablet typically shares mobile settings." },
+            { module: "Website", q: "In 'Optimize SEO' tool, can you fill some fields with AI?", options: ["Yes, but only title and description", "Yes, but only keywords", "Yes: title, description, and keywords can be filled with AI"], correct: 2, ref: "Odoo 19.0 - SEO Tools", why: "The AI-powered SEO tool can generate suggestions for all three key SEO fields: title, description, and keywords." },
+
+            // eCommerce - Additional
+            { module: "eCommerce", q: "Products with attribute 'A' should be $50 higher than attribute 'B'. How to automate?", options: ["Change 'Default Extra Price' value in backend of that attribute", "In 'Sales Price' on product variants", "This can only be done with a pricelist"], correct: 0, ref: "Odoo 19.0 - Attribute Pricing", why: "'Default Extra Price' on attribute values automatically adds/subtracts from base price for all products using that attribute." },
+            { module: "eCommerce", q: "What other option is there to display a color variant of a product?", options: ["Video, GIF, or 3D render can be used instead of color", "3D render of color variant can be displayed", "An image or GIF can be displayed instead of a color"], correct: 2, ref: "Odoo 19.0 - Product Variants", why: "Instead of a color swatch, you can display an image or GIF representing the variant, useful for patterns or designs." },
+
+            // Accounting - Additional  
+            { module: "Accounting", q: "Why is a line highlighted in red in a purchase order?", options: ["Product is currently out of stock", "This PO line will exceed the analytic budget if confirmed", "Product is not available for delivery in requested quantity"], correct: 1, ref: "Odoo 19.0 - Budget Warnings", why: "Red highlighting indicates the purchase order line will exceed the analytic budget if confirmed - a budget warning." },
+
+            // Purchase - Additional
+            { module: "Purchase", q: "You have vendor pricelist: Azure Interior (20 units, $450), Gemini Furniture (10 units, $470), Gemini Furniture (10 units, $500). Reordering triggers for 12 units. Which vendor and price?", options: ["Gemini Furniture - $470", "Azure Interior - $450", "Gemini Furniture - $470 (for 10 units) and $500 (for 2 units)"], correct: 0, ref: "Odoo 19.0 - Vendor Pricelist", why: "For 12 units, Gemini Furniture at $470 meets the minimum quantity requirement (10) and offers the best price.", feedback: "This question requires understanding minimum quantity thresholds on vendor pricelists." },
+
+            // ========== NEW EXAM QUESTIONS (From Screenshots) ==========
+
+            // Introduction - New
+            { module: "Introduction", q: "Why can you sort by some fields in a list view but not by others?", options: ["You can only sort simple fields, not relational fields.", "You can only sort fields that are not computed.", "You can only sort fields stored in the database."], correct: 2, ref: "Odoo 19.0 - List View Sorting" },
+            { module: "Introduction", q: "What does it mean when a record is archived in Odoo?", options: ["Records cannot be archived for traceability purposes.", "When a record is archived in Odoo, it is hidden from regular view, and no longer active.", "When a record is archived, nobody can ever modify it, it's frozen forever."], correct: 1, ref: "Odoo 19.0 - Archiving Records" },
+            { module: "Introduction", q: "What option in Odoo can help a user better protect their account?", options: ["VPN (Virtual Private Network).", "Use an incognito browser window.", "2FA (Two-Factor Authentication)."], correct: 2, ref: "Odoo 19.0 - Account Security" },
+            { module: "Introduction", q: "What action(s) need to be taken on the Odoo dashboard to order the placement of the icons?", options: ["Enable edit mode from the dashboard settings, then use the 'Arrange Apps' option to drag icons into place.", "Open the user menu, select 'Customize Dashboard,' and reorder the apps by dragging them in the list view.", "Click on an app icon and hold the mouse button down; the icon will tilt slightly, allowing it to be dragged into a new position within the app grid."], correct: 2, ref: "Odoo 19.0 - Dashboard Customization" },
+            { module: "Introduction", q: "What happens to the fields of secondary contacts when merging into a master contact?", options: ["Odoo discards all information from secondary contacts except for linked records.", "Fields in the master record remain, and non-empty fields from the secondary records are merged in.", "All fields from secondary contacts overwrite the data in the master contact."], correct: 1, ref: "Odoo 19.0 - Contact Merging" },
+
+            // Sales - New
+            { module: "Sales", q: "A customer is interested in a rather expensive product. The product has a supplier delivery lead time that is LESS than your customer delivery lead time. You do not sell this product often, due to its expensive nature. With that in mind, what is the best procurement method for you to manage this product effectively?", options: ["Go into the Settings app and enable 'Bulk Discounts'. When you buy more than ten of the item at a time, your request for quotation will automatically negotiate a cheaper rate", "Use the Master Production Schedule tool", "Set this product route to 'Replenish on Order (MTO)'"], correct: 2, ref: "Odoo 19.0 - MTO Route" },
+            { module: "Sales", q: "What does it mean if the forecasted quantity of a product is higher than the quantity on hand?", options: ["You have enabled 'Include Components in Forecasts' and your forecast is including potential units you may choose to manufacture at a future date", "New products are planned to be added to inventory because of a purchase or manufacturing order or because of returns", "A sales order has failed and product has not been removed from inventory"], correct: 1, ref: "Odoo 19.0 - Forecasted Quantity" },
+            { module: "Sales", q: "What condition must be true when using a default unit of measure and purchase unit of measure?", options: ["The two units of measure must share the same reference unit", "The two units of measure cannot share the same reference unit", "The two units of measure must have the same unit name as each other"], correct: 0, ref: "Odoo 19.0 - Units of Measure" },
+            { module: "Sales", q: "When a customer finalizes a purchase in the online store:", options: ["Odoo automatically creates a sales order and invoice in the Sales app (if the 'Automatic Invoice' setting is activated)", "Odoo automatically creates a quotation in the Sales app (if the 'Automatic Quotation' setting is activated)", "Odoo automatically creates a new opportunity in the CRM pipeline (if the 'Automatic Opportunity' setting is activated)"], correct: 0, ref: "Odoo 19.0 - eCommerce Orders" },
+            { module: "Sales", q: "You run a small business as a baker. You have a physical storefront where you offer individual loaves of bread, a lunch menu consisting of the customer's choice of sandwich and soft drink, and at-home breadmaking classes. Which of these products best fits the 'Service' Product Type?", options: ["The individual loaves of bread, since baking bread is the service you perform as a baker", "The at-home breadmaking classes, since you are selling an experience and not a physical good", "The lunch menu, since you're letting customers choose items for a complete meal rather than selling them individual baked goods"], correct: 1, ref: "Odoo 19.0 - Product Types" },
+            { module: "Sales", q: "How can you send a preliminary invoice to a customer *before* a sale is confirmed?", options: ["Enable the 'Pro-Forma Invoice' setting, create a quotation, and click the 'Send PRO-FORMA Invoice' button", "Enable the 'Pro-Forma Invoice' setting, go to the Sales App, click the 'To Invoice' header, and select 'Send Invoice (Pro-Forma)'", "You can just send a quotation, since a quotation is technically a kind of invoice"], correct: 0, ref: "Odoo 19.0 - Pro-Forma Invoice" },
+            { module: "Sales", q: "When generating Gift Cards, they can be generated for...", options: ["Anonymous Customer", "Selected Customers", "Both"], correct: 2, ref: "Odoo 19.0 - Gift Cards" },
+            { module: "Sales", q: "What is the difference between a pro-forma invoice and a standard invoice?", options: ["A pro-forma invoice is not used to request payment from a customer, but rather as a confirmation step between quotation and invoicing", "A pro-forma invoice is legally non-binding, meaning that neither you nor your customer can be sued for failing to follow its terms", "A pro-forma invoice follows a standardized format intended for providing professional services, like a legal consultation"], correct: 0, ref: "Odoo 19.0 - Pro-Forma Invoice" },
+            { module: "Sales", q: "If you add or delete Attributes from a product form, what does it do to Variants of that product?", options: ["Already created variants remain unchanged", "A pop-up will appear for each affected Variant asking if you want to keep it or delete it", "Existing variants that have not been used will be deleted and recreated, leading to the loss of their possible customizations. Variants that have been used in an order will be archived"], correct: 2, ref: "Odoo 19.0 - Product Variants" },
+
+            // Survey - New
+            { module: "Survey", q: "When a new survey is being created, which of the following is NOT an available survey type option?", options: ["Recruitment", "Questionnaire", "Assessment"], correct: 0, ref: "Odoo 19.0 - Survey Types" },
+            { module: "Survey", q: "Which of the following question types cannot be used to generate leads on a Survey?", options: ["Multiple Choice: only one answer.", "Single line text box.", "Matrix."], correct: 2, ref: "Odoo 19.0 - Survey Lead Generation" },
+
+            // CRM - New
+            { module: "CRM", q: "How many quotations or sales orders can you create from a single opportunity?", options: ["Unlimited quotations, but only one sales order.", "As many quotations and sales orders as you want.", "Only one quotation or sales order can be active at a time."], correct: 1, ref: "Odoo 19.0 - CRM Opportunities" },
+            { module: "CRM", q: "Which of the following fields is used by Odoo when detecting duplicate leads (not similar leads)?", options: ["Email", "Contact name", "Opportunity name"], correct: 0, ref: "Odoo 19.0 - Duplicate Lead Detection" },
+            { module: "CRM", q: "A user with the access rights User: Own Documents Only can work with which leads?", options: ["All leads, if the user is in Developer Mode.", "Leads that were created in the previous year.", "Leads that are assigned to them, or not yet assigned to anyone."], correct: 2, ref: "Odoo 19.0 - CRM Access Rights" },
+            { module: "CRM", q: "Which of the following is not true about the relationship between an opportunity and a customer in Odoo?", options: ["You can create a new customer record before or after winning the opportunity.", "Once an opportunity is won, you can no longer create a new customer record from the opportunity form.", "Opportunities can remain in the database without a customer linked, even after they are closed or won."], correct: 1, ref: "Odoo 19.0 - CRM Customer Relationships" },
+            { module: "CRM", q: "How can you customize the criteria used for Predictive Lead Scoring in Odoo?", options: ["Go to Configuration > Settings, click Update Probabilities under the Predictive Lead Scoring section, and customize the criteria.", "Go to Configuration > Sales Teams, click Update Probabilities under the Predictive Lead Scoring section, and customize the criteria.", "In Developer Mode, go to Reporting, click Update Probabilities, and customize the criteria."], correct: 0, ref: "Odoo 19.0 - Predictive Lead Scoring" },
+            { module: "CRM", q: "How can you forward leads to resellers in Odoo?", options: ["Install the Resellers module.", "Enable the Resellers setting in Configuration.", "Assign leads manually to reseller contacts without activating any settings."], correct: 1, ref: "Odoo 19.0 - Resellers" },
+            { module: "CRM", q: "What is the shortest interval of time at which automatic rule-based lead assignment can occur in Odoo?", options: ["Seconds", "Minutes", "Hours"], correct: 1, ref: "Odoo 19.0 - Lead Assignment Rules" },
+
+            // AI - New
+            { module: "AI", q: "When configuring an AI Agent in Odoo, how do Topics and Sources work together?", options: ["Topics define the actions and behaviors available to the agent, while Sources determine which documents or pages the agent can use to generate responses.", "Topics identify which documents the agent can access, while Sources define how the agent communicates with users.", "Topics are used only for internal Knowledge pages, while Sources are used for any data uploaded to the Documents app."], correct: 0, ref: "Odoo 19.0 - AI Agent Configuration" },
+            { module: "AI", q: "What is the purpose of AI Tools in Odoo's AI framework?", options: ["To provide extra data sources for the agent to read from.", "To limit the agent's output to predefined templates.", "To extend the AI Agent's capabilities beyond text generation, allowing it to perform defined actions or functions."], correct: 2, ref: "Odoo 19.0 - AI Tools" },
+            { module: "AI", q: "You want to ask an AI Agent how many leads are currently assigned to a specific salesperson. Which Topic must be assigned to the agent for it to answer that question?", options: ["Information Reporting.", "Information Retrieval.", "Lead Assessment."], correct: 1, ref: "Odoo 19.0 - AI Agent Topics" },
+            { module: "AI", q: "When you open a conversation with an AI Agent, what information does it automatically know about the record?", options: ["Only the record name and user's message.", "It can access the field values of the record you're viewing, unless restricted by configuration.", "It only knows what's stored in its Sources."], correct: 1, ref: "Odoo 19.0 - AI Agent Context" },
+
+            // Marketing - New
+            { module: "Marketing", q: "Can you use the same mailing list contacts for BOTH email and SMS marketing campaigns?", options: ["No, mailing list contacts are specific to the delivery method, and are not interchangeable.", "No, since SMS mailing list contacts do not have an email field, and email marketing lists do not have a phone number field.", "Yes, since mailing list contacts contain both email addresses and phone numbers."], correct: 2, ref: "Odoo 19.0 - Mailing Lists" },
+            { module: "Marketing", q: "You are creating an event at a space with a limited number of seats. How would you configure an event to ensure every attendee has a seat?", options: ["On the event form, tick the Limit Registrations box, then enter the maximum number of attendees.", "On the event form, enter the maximum capacity of the venue in the Capacity field.", "After selecting the venue, Odoo automatically pulls capacity limits from the venue form."], correct: 0, ref: "Odoo 19.0 - Event Registration Limits" },
+            { module: "Marketing", q: "After creating an email in the Email Marketing app, how do you save that as a template for future use?", options: ["Only 25 email templates can be stored at one time. Click 'Templates', and if there is space, click 'Add'. If not, delete a template, then click 'Add'.", "No additional email templates can be created, only the default templates can be used, and modified as needed.", "Click the 'Add to Templates' button at the top of the form."], correct: 2, ref: "Odoo 19.0 - Email Templates" },
+
+            // Website - New
+            { module: "Website", q: "What font library is available in Odoo?", options: ["Adobe Fonts", "Google Fonts", "DaFont"], correct: 1, ref: "Odoo 19.0 - Website Fonts" },
+            { module: "Website", q: "Are building blocks shared across all themes or specific to each one?", options: ["Building blocks are specific to each theme - that's why you start with the theme selection.", "All themes share the same building blocks and features.", "Some building blocks are shared between different themes, others aren't."], correct: 1, ref: "Odoo 19.0 - Website Building Blocks" },
+            { module: "Website", q: "How can you hide a building block for a specific language?", options: ["By using block conditional visibility in the Style tab.", "You can only customize text between languages.", "First activate developer mode and then hide it using the website editor."], correct: 0, ref: "Odoo 19.0 - Block Visibility" },
+            { module: "Website", q: "How can you optimize product images on your website?", options: ["Upload them from the form view in the backend, where Odoo automatically converts them to the WebP format.", "Upload them from the form view, and click 'Customize' to resize the image.", "Convert them online then upload them from the frontend of the product page."], correct: 0, ref: "Odoo 19.0 - Image Optimization" },
+
+            // eCommerce - New
+            { module: "eCommerce", q: "Where can you choose to hide or display attributes on a product card?", options: ["In Website > Configuration > Settings.", "Website > eCommerce > Attributes then click on an attribute and select display type on On Product Cards.", "Website > eCommerce > Products."], correct: 1, ref: "Odoo 19.0 - Product Card Attributes" },
+            { module: "eCommerce", q: "Where can you add Optional Products?", options: ["On the frontend of the product page with the Editor.", "In Website > eCommerce > Products.", "In the product backend, on the Sales tab."], correct: 2, ref: "Odoo 19.0 - Optional Products" },
+            { module: "eCommerce", q: "Are Accessory products part of a cross-selling strategy? Where do they appear?", options: ["No, they're suggested on the product page.", "Yes, they're suggested in the eCommerce cart.", "Yes, they're suggested during checkout, right before payment."], correct: 1, ref: "Odoo 19.0 - Accessory Products" },
+            { module: "eCommerce", q: "How can you automatically generate a product description?", options: ["First, download the AI app and add your API key. Then you can use it to generate a product description.", "In Website > Configuration > Settings, enable 'Generate Product Description Automatically'.", "In the product backend, on the Sales tab, click the generate description button."], correct: 2, ref: "Odoo 19.0 - AI Product Description" },
+
+            // Knowledge - New
+            { module: "Knowledge", q: "How can you move an article to the 'Favorites' category?", options: ["With a simple drag and drop.", "By clicking the 'star' icon.", "Via the 'Move To' option."], correct: 1, ref: "Odoo 19.0 - Knowledge Favorites" },
+            { module: "Knowledge", q: "What happens to your private article if you set the 'General Access' to 'Can Read' or 'Can Edit'?", options: ["It stays in the private category, and others can read or edit it", "It is automatically sent to the Shared category", "It is automatically sent to the Workspace category"], correct: 2, ref: "Odoo 19.0 - Knowledge Access" },
+            { module: "Knowledge", q: "Which of the following commands allows for hiding and showing a block of content?", options: ["Index", "Toggle list", "Separator"], correct: 1, ref: "Odoo 19.0 - Knowledge Commands" },
+
+            // Project - New
+            { module: "Project", q: "When can Odoo send an automatic task rating request to a customer?", options: ["Only when a task reaches a specific stage", "Only on a periodic basis (e.g., every month)", "Both when a task reaches a specific stage or on a periodic basis"], correct: 2, ref: "Odoo 19.0 - Task Ratings" },
+            { module: "Project", q: "What does not trigger the creation of a new task when a recurrence is set on a task?", options: ["When the task is moved to the last Kanban stage", "When the task is marked as canceled", "When the task is marked as done"], correct: 1, ref: "Odoo 19.0 - Task Recurrence" },
+            { module: "Project", q: "What is not carried over from the original task when a recurring task is created?", options: ["Tags", "Activities", "Assignees"], correct: 1, ref: "Odoo 19.0 - Recurring Tasks" },
+            { module: "Project", q: "Which users can view a private task?", options: ["Only the user who created the task and users with the access right 'Project Administrator'", "All users assigned to the task and all users added as followers of the task", "All users added as followers of the task and users with the access right 'Project Administrator'"], correct: 1, ref: "Odoo 19.0 - Private Tasks" },
+            { module: "Project", q: "When creating a task from a project's Kanban view, adding '24h' to the task title will:", options: ["Add the text '24h' to the task's title", "Allocate 24 hours to the task", "Set the task deadline's to be in 24 hours"], correct: 1, ref: "Odoo 19.0 - Quick Task Creation" },
+            { module: "Project", q: "What happens to a project when you convert it into a template?", options: ["Nothing: the project stays as it is in your database", "The project is archived", "The project is deleted"], correct: 1, ref: "Odoo 19.0 - Project Templates" },
+
+            // Timesheets - New
+            { module: "Timesheets", q: "At what level can you configure overtime settings?", options: ["At the company level", "At the employee level", "At the project level"], correct: 1, ref: "Odoo 19.0 - Overtime Settings" },
+            { module: "Timesheets", q: "What happens when you enable the 'Timesheet Validation' setting?", options: ["Timesheets must be approved by the project manager before they can be submitted", "Employees can only record time after their timesheets are validated by their manager", "Timesheets require validation by a supervisor before being used by the Payroll or Invoicing app"], correct: 2, ref: "Odoo 19.0 - Timesheet Validation" },
+            { module: "Timesheets", q: "What happens when you click one of the lettered-buttons (e.g., a, b, c) on the left of a timesheet?", options: ["You open the task linked to the timesheet", "You open the project linked to the timesheet", "You expand the details of the timesheet entry"], correct: 0, ref: "Odoo 19.0 - Timesheet Interface" },
+
+            // Accounting - New
+            { module: "Accounting", q: "What can be done after the Lock Everything lock date?", options: ["No changes can be made after the Lock Everything lock date.", "A user with Administrator access can set a temporary exception for themselves and other users, and select the desired exception duration.", "All changes are possible as long as the Hard Lock is not set."], correct: 1, ref: "Odoo 19.0 - Lock Dates" },
+            { module: "Accounting", q: "How can you configure fiscal positions to apply automatically to contacts based on their country?", options: ["Select the country and enable the 'Detect Automatically' option on the fiscal position.", "Set the customer's fiscal position to 'Detect Automatically'.", "Set the invoice's fiscal position to 'Detect Automatically'."], correct: 0, ref: "Odoo 19.0 - Fiscal Position Auto-Detection" },
+
+            // Spreadsheet - New
+            { module: "Spreadsheet", q: "What is the purpose of field matching when setting up a global filter?", options: ["It allows the filter to automatically format the output cells based on the field type (e.g., currency, date).", "It allows you to configure access rights to ensure the user is authorized to see the matched field.", "It ensures the filter acts on the correct database field for each specific data source in the spreadsheet."], correct: 2, ref: "Odoo 19.0 - Spreadsheet Filters" },
+            { module: "Spreadsheet", q: "In the Data menu, what does a warning symbol beside the data source of an inserted list or pivot table mean?", options: ["There is a problem preventing the data in the list or pivot table being updated automatically.", "The number of records in the list or pivot table exceeds the maximum allowed, impacting performance.", "There is no list or pivot table related to that data source present in the spreadsheet."], correct: 2, ref: "Odoo 19.0 - Spreadsheet Data Sources" },
+
+            // HR - New
+            { module: "HR", q: "What method is unavailable for employee sign in using Attendances kiosk?", options: ["A barcode on an employee badge", "Manually selecting the employee", "A biometric signature"], correct: 2, ref: "Odoo 19.0 - Attendance Kiosk" },
+
+            // POS - New
+            { module: "POS", q: "What is required when configuring a payment method?", options: ["Selecting a point of sale.", "Selecting a terminal.", "Selecting a journal."], correct: 2, ref: "Odoo 19.0 - POS Payment Methods" },
+            { module: "POS", q: "Which setting allows you to send the request to the printer automatically?", options: ["Print Full Receipt.", "Early Receipt Printing.", "Automatic Receipt Printing."], correct: 2, ref: "Odoo 19.0 - POS Printing" },
+            { module: "POS", q: "What happens when a customer pays using their customer account in the POS?", options: ["The purchase amount is immediately deducted from inventory.", "The purchase amount is recorded as debt until it is paid off."], correct: 1, ref: "Odoo 19.0 - POS Customer Accounts" },
+
+            // Inventory - New
+            { module: "Inventory", q: "What happens when you validate a delivery order for a customer?", options: ["Subtracts quantities from the Customer Location", "Subtracts quantities from the Internal Location and adds quantities to the Customer Location", "Adds quantities to the Customer Location"], correct: 1, ref: "Odoo 19.0 - Delivery Validation" },
+            { module: "Inventory", q: "You're reviewing a 'Pack' operation and want to perform a one-time quality check — without creating a rule that forces quality checks for all packing operations. How can you do this?", options: ["Quality checks cannot be triggered without creating a Quality Control Point. In the Quality app, create a QCP for the operation type = Pack", "On the chosen pack operation, click the cog icon > Quality check", "Go to Inventory > Operations > Quality Checks, and select the desired packing operation"], correct: 1, ref: "Odoo 19.0 - Quality Checks" },
+            { module: "Inventory", q: "Two delivery orders are waiting for the same product. Your warehouse uses the 'At Confirmation' reservation method. Only one delivery can be fulfilled immediately because stock is limited. You decide to star one of the pickings in the Delivery Orders list view. What happens when you check reservations again?", options: ["The starred delivery gets priority and reserves stock for it first", "Starring a picking only flags it visually and does not affect reservations", "Both pickings remain unreserved until stock replenishment is received"], correct: 0, ref: "Odoo 19.0 - Delivery Priority" },
+
+            // MRP - New
+            { module: "MRP", q: "What is shown on the MO card on Shop Floor dashboard?", options: ["Estimated time to complete MO", "MO number", "Product being manufactured"], correct: 0, ref: "Odoo 19.0 - Shop Floor Dashboard", why: "The estimated time to complete the MO is NOT shown on the shop floor card; MO number and product ARE shown." },
+
+            // Studio - New
+            { module: "Studio", q: "In Form view, what is the key difference between a Primary button and a Secondary button?", options: ["The design of the buttons (e.g., color and prominence) guide the user's main action.", "Primary buttons execute server actions, while secondary buttons call Python methods.", "Secondary buttons are hidden on mobile views, while primary buttons are visible."], correct: 0, ref: "Odoo 19.0 - Studio Buttons" },
+            { module: "Studio", q: "To display a star rating system for a field with four values (e.g., 0 to 3 stars), which field type and widget could you use?", options: ["Selection field with the Badge widget.", "Priority field with the Radio widget.", "Selection field with the Priority widget."], correct: 2, ref: "Odoo 19.0 - Studio Widgets" },
+            { module: "Studio", q: "In which types of views can you add 'New Fields' using Studio?", options: ["Form and List views only.", "Form, List, and Kanban views.", "All view types."], correct: 1, ref: "Odoo 19.0 - Studio Field Creation" }
+        ];
+
+        // State
+        let userAnswers = {};
+        let timerInterval;
+        let timeRemaining = 150 * 60; // 150 minutes
+        let currentMode = 'practice'; // 'exam' or 'practice'
+
+        // Initialize
+        function init() {
+            renderQuestions();
+            startTimer();
+            document.getElementById('totalCount').textContent = examData.length;
+            setMode('practice');
+        }
+
+        function setMode(mode) {
+            currentMode = mode;
+            const examBtn = document.getElementById('examModeBtn');
+            const practiceBtn = document.getElementById('practiceModeBtn');
+            const modeDesc = document.getElementById('modeDescription');
+            const scoreDisplay = document.getElementById('currentScore').parentElement;
+
+            if (mode === 'exam') {
+                examBtn.classList.add('btn-primary');
+                examBtn.classList.remove('btn-secondary');
+                practiceBtn.classList.remove('btn-primary');
+                practiceBtn.classList.add('btn-secondary');
+                modeDesc.textContent = 'Current: Exam Mode - Score hidden until submission | Wrong = -0.5 points';
+                scoreDisplay.style.display = 'none';
+                // Hide all explanations and feedback
+                document.querySelectorAll('.explanation').forEach(e => e.classList.remove('show'));
+                document.querySelectorAll('.option').forEach(o => o.classList.remove('correct', 'wrong'));
+            } else {
+                practiceBtn.classList.add('btn-primary');
+                practiceBtn.classList.remove('btn-secondary');
+                examBtn.classList.remove('btn-primary');
+                examBtn.classList.add('btn-secondary');
+                modeDesc.textContent = 'Current: Practice Mode - Instant feedback enabled (green/red)';
+                scoreDisplay.style.display = 'block';
+            }
+
+            // Reset exam on mode change
+            resetExam();
+        }
+
+        function renderQuestions() {
+            const container = document.getElementById('questions-container');
+            const modules = [...new Set(examData.map(q => q.module))];
+
+            let html = '';
+            let questionCounter = 1;
+            modules.forEach(module => {
+                const moduleQuestions = examData.filter(q => q.module === module);
+
+                html += `<div class="module-section" data-module="${module}">
+            <div class="module-header" onclick="toggleModule(this)">
+                <h2>${getModuleIcon(module)} ${module}</h2>
+                <span class="module-badge">${moduleQuestions.length} Questions</span>
+            </div>
+            <div class="module-content">`;
+
+                moduleQuestions.forEach((q, i) => {
+                    const globalIndex = examData.indexOf(q);
+                    html += `<div class="question-card" id="q${globalIndex}" data-correct="${q.correct}">
+                <span class="question-number">Q${questionCounter}</span>
+                <p class="question-text">${q.q}</p>
+                <div class="options">`;
+                    questionCounter++;
+
+                    q.options.forEach((opt, optIdx) => {
+                        html += `<div class="option" data-value="${optIdx}" onclick="selectOption(${globalIndex}, ${optIdx})">
+                    <span class="option-marker">${String.fromCharCode(65 + optIdx)}</span>
+                    <span class="option-text">${opt}</span>
+                </div>`;
+                    });
+
+                    html += `</div>
+                <div class="explanation" id="exp${globalIndex}">
+                    <h4>✅ Correct: ${String.fromCharCode(65 + q.correct)}</h4>
+                    <p>${q.options[q.correct]}</p>
+                    ${q.why ? `<p style="margin-top:10px;color:#7b68ee;"><strong>💡 Why:</strong> ${q.why}</p>` : ''}
+                    ${q.feedback ? `<p style="margin-top:10px;background:rgba(255,193,7,0.2);padding:8px;border-radius:6px;color:#ffc107;"><strong>⚠️ Note:</strong> ${q.feedback}</p>` : ''}
+                    <p class="doc-ref">📚 ${q.ref}</p>
+                </div>
+            </div>`;
+                });
+
+                html += `</div></div>`;
+            });
+
+            container.innerHTML = html;
+        }
+
+        function getModuleIcon(module) {
+            const icons = {
+                'Introduction': '📋', 'Sales': '💰', 'Survey': '📝', 'CRM': '🎯',
+                'AI': '🤖', 'Marketing': '📢', 'eCommerce': '🛒', 'Knowledge': '📚',
+                'Project': '📊', 'Timesheets': '⏱️', 'Accounting': '💵', 'Spreadsheet': '📈',
+                'HR': '👥', 'POS': '🏪', 'Purchase': '🛍️', 'Inventory': '📦',
+                'MRP': '🏭', 'Studio': '🎨'
+            };
+            return icons[module] || '📌';
+        }
+
+        function toggleModule(header) {
+            const content = header.nextElementSibling;
+            content.style.display = content.style.display === 'none' ? 'block' : 'block';
+        }
+
+        function selectOption(qIndex, optIndex) {
+            userAnswers[qIndex] = optIndex;
+
+            const card = document.getElementById(`q${qIndex}`);
+            card.querySelectorAll('.option').forEach(opt => opt.classList.remove('selected', 'correct', 'wrong'));
+            card.querySelector(`[data-value="${optIndex}"]`).classList.add('selected');
+
+            // Practice mode: show instant feedback
+            if (currentMode === 'practice') {
+                const correctAnswer = examData[qIndex].correct;
+                const isCorrect = optIndex === correctAnswer;
+
+                // Highlight correct answer in green
+                card.querySelector(`[data-value="${correctAnswer}"]`).classList.add('correct');
+
+                // If wrong, highlight user's answer in red
+                if (!isCorrect) {
+                    card.querySelector(`[data-value="${optIndex}"]`).classList.add('wrong');
+                }
+
+                // Show explanation
+                document.getElementById(`exp${qIndex}`).classList.add('show');
+
+                // Update card border color
+                card.classList.remove('correct-answer', 'wrong-answer');
+                card.classList.add(isCorrect ? 'correct-answer' : 'wrong-answer');
+            }
+
+            updateProgress();
+        }
+
+        function updateProgress() {
+            const answered = Object.keys(userAnswers).length;
+            document.getElementById('answeredCount').textContent = answered;
+
+            let correct = 0;
+            Object.entries(userAnswers).forEach(([qIdx, ans]) => {
+                if (examData[qIdx].correct === ans) correct++;
+            });
+            const score = answered > 0 ? Math.round((correct / examData.length) * 100) : 0;
+            document.getElementById('currentScore').textContent = score + '%';
+        }
+
+        function startTimer() {
+            timerInterval = setInterval(() => {
+                timeRemaining--;
+                const mins = Math.floor(timeRemaining / 60);
+                const secs = timeRemaining % 60;
+                document.getElementById('timer').textContent =
+                    `⏱️ ${String(mins).padStart(2, '0')}:${String(secs).padStart(2, '0')}`;
+
+                if (timeRemaining <= 0) {
+                    clearInterval(timerInterval);
+                    submitExam();
+                }
+            }, 1000);
+        }
+
+        function submitExam() {
+            clearInterval(timerInterval);
+
+            let correctCount = 0;
+            let wrongCount = 0;
+            let skippedCount = 0;
+            const moduleScores = {};
+
+            examData.forEach((q, idx) => {
+                const userAns = userAnswers[idx];
+                const card = document.getElementById(`q${idx}`);
+                const isAnswered = userAns !== undefined;
+                const isCorrect = isAnswered && userAns === q.correct;
+
+                if (isCorrect) correctCount++;
+                else if (isAnswered) wrongCount++;
+                else skippedCount++;
+
+                // Track module scores
+                if (!moduleScores[q.module]) moduleScores[q.module] = { correct: 0, wrong: 0, skipped: 0, total: 0 };
+                moduleScores[q.module].total++;
+                if (isCorrect) moduleScores[q.module].correct++;
+                else if (isAnswered) moduleScores[q.module].wrong++;
+                else moduleScores[q.module].skipped++;
+
+                // Show results
+                card.classList.remove('correct-answer', 'wrong-answer');
+                if (isAnswered) {
+                    card.classList.add(isCorrect ? 'correct-answer' : 'wrong-answer');
+                }
+                card.querySelectorAll('.option').forEach(opt => {
+                    const val = parseInt(opt.dataset.value);
+                    opt.classList.remove('correct', 'wrong');
+                    if (val === q.correct) opt.classList.add('correct');
+                    else if (val === userAns && !isCorrect) opt.classList.add('wrong');
+                });
+                document.getElementById(`exp${idx}`).classList.add('show');
+            });
+
+            // Calculate score with -0.5 penalty for wrong answers
+            // Points: +1 for correct, -0.5 for wrong, 0 for skipped
+            const totalPoints = correctCount - (wrongCount * 0.5);
+            const maxPoints = examData.length;
+            const score = Math.max(0, Math.round((totalPoints / maxPoints) * 100));
+            const passed = score >= 70;
+
+            // Show results modal
+            const circle = document.getElementById('scoreCircle');
+            circle.className = `score-circle ${passed ? 'pass' : 'fail'}`;
+            document.getElementById('finalScore').textContent = score + '%';
+            document.getElementById('passStatus').innerHTML = passed
+                ? '🎉 <span style="color:#00d4aa">PASSED!</span> Congratulations!'
+                : '❌ <span style="color:#ff6b6b">FAILED</span> - Need 70% to pass';
+
+            // Module stats
+            let statsHtml = '';
+            Object.entries(moduleScores).forEach(([mod, data]) => {
+                const pct = Math.round((data.correct / data.total) * 100);
+                const colorClass = pct >= 80 ? 'good' : pct >= 60 ? 'medium' : 'bad';
+                const modPoints = data.correct - (data.wrong * 0.5);
+                statsHtml += `<div class="stat-card">
+            <h4>${mod}</h4>
+            <strong style="color:#00d4aa">✓${data.correct}</strong> 
+            <strong style="color:#ff6b6b">✗${data.wrong}</strong> 
+            <strong style="color:#888">○${data.skipped}</strong>
+            <div style="font-size:0.8rem;margin-top:5px;">Points: ${modPoints.toFixed(1)}/${data.total}</div>
+            <div class="stat-bar"><div class="stat-fill ${colorClass}" style="width:${pct}%"></div></div>
+        </div>`;
+            });
+
+            // Add summary
+            const summaryHtml = `<div style="text-align:center;margin-top:20px;padding:15px;background:rgba(255,255,255,0.05);border-radius:10px;">
+        <p><strong style="color:#00d4aa">✓ Correct: ${correctCount}</strong> (+${correctCount} pts)</p>
+        <p><strong style="color:#ff6b6b">✗ Wrong: ${wrongCount}</strong> (-${(wrongCount * 0.5).toFixed(1)} pts)</p>
+        <p><strong style="color:#888">○ Skipped: ${skippedCount}</strong> (0 pts)</p>
+        <p style="margin-top:10px;font-size:1.1rem;"><strong>Total Points: ${totalPoints.toFixed(1)} / ${maxPoints}</strong></p>
+    </div>`;
+
+            document.getElementById('moduleStats').innerHTML = statsHtml + summaryHtml;
+            document.getElementById('resultsModal').classList.add('show');
+        }
+
+        function showAnswers() {
+            examData.forEach((q, idx) => {
+                const card = document.getElementById(`q${idx}`);
+                card.querySelectorAll('.option').forEach(opt => {
+                    const val = parseInt(opt.dataset.value);
+                    if (val === q.correct) opt.classList.add('correct');
+                });
+                document.getElementById(`exp${idx}`).classList.add('show');
+            });
+        }
+
+        function resetExam() {
+            userAnswers = {};
+            timeRemaining = 150 * 60;
+            clearInterval(timerInterval);
+
+            document.querySelectorAll('.question-card').forEach(card => {
+                card.classList.remove('correct-answer', 'wrong-answer');
+                card.querySelectorAll('.option').forEach(opt => {
+                    opt.classList.remove('selected', 'correct', 'wrong');
+                });
+            });
+            document.querySelectorAll('.explanation').forEach(exp => exp.classList.remove('show'));
+
+            // Reset progress display
+            document.getElementById('answeredCount').textContent = '0';
+            document.getElementById('currentScore').textContent = '0%';
+
+            // Handle score visibility based on mode
+            const scoreDisplay = document.getElementById('currentScore').parentElement;
+            scoreDisplay.style.display = currentMode === 'exam' ? 'none' : 'block';
+
+            startTimer();
+        }
+
+        function closeResults() {
+            document.getElementById('resultsModal').classList.remove('show');
+        }
+
+        // Start
+        init();
+    </script>
+</body>
+
+</html>
